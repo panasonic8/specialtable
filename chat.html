@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <ul class="nav-navbar">
+       <li class=" nav-item"><p class="display-4 text-light">chat de espera</p></li>
+
+       <li class=" nav-link"><a href="index.html" class="text-primary">volver</a></li>
+
+    </ul>
+    </nav>
+    <input type="text" class="formal-group" placeholder="escribe un mensaje" id="input">
+    <button class="btn btn-primary" onclick="barra()">enviar mensaje</button>
+    <div id="alert"></div>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js"></script>
+    <script>
+        var pubnub = new PubNub({
+            publishKey: "pub-c-1ffedcf4-3d4c-4156-9bd7-8f67e37fe7fa",
+            subscribeKey: "sub-c-0012bb76-89d2-11ea-927a-2efbc014b69f"
+        });
+    function send(thing){
+        pubnub.publish({
+            channel: "memes",
+            message: {
+                word: thing
+            }
+        })
+    }
+    
+    pubnub.addListener({
+        message: function(msg){
+            document.getElementById("alert").innerHTML += `<div class="alert alert-info">${msg.message.word}</div>` 
+        }
+    });
+    
+    pubnub.subscribe({
+        channels: ["memes"]
+    });
+    
+    function barra(){
+        send(document.getElementById("input").value);
+        document.getElementById("input").innerHTML = "";
+    }
+        </script>
+</body>
+</html>
